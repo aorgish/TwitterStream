@@ -18,7 +18,7 @@ namespace TwitterStream.Infrastructure
             writer.WriteLine(value);
             lineCount++;
             
-            if (lineCount >= 500) {
+            if (lineCount >= 500000) {
                 Close();
                 lineCount = 1;
             }
