@@ -19,12 +19,21 @@ namespace TwitterStream.Infrastructure
         private WebResponse response;
 
         public IEnumerable<string> Twits() {
+            int emptyLinesCount = 0;
             response = GetResponse();
             stream = response.GetResponseStream();
             reader = new StreamReader(stream, Encoding.UTF8);
             
             while(true) {
-               yield return reader.ReadLine();
+               var line = reader.ReadLine();
+               if (string.IsNullOrEmpty(line)) {
+                   emptyLinesCount++;
+                   if (emptyLinesCount == 20)
+                       throw new ApplicationException("Twitter returns 20 empty lines in a row!");
+               } else {
+                   emptyLinesCount = 0;
+                   yield return line;
+               }
             }
         }
 
